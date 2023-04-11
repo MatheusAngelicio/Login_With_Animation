@@ -2,10 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:login_with_animation/constants.dart';
 import 'package:login_with_animation/widgets/login_form.dart';
+import 'package:login_with_animation/widgets/sign_up_form.dart';
 import 'package:login_with_animation/widgets/socal_buttons.dart';
 
-class AuthScreen extends StatelessWidget {
+class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  bool _isShowSignUp = false;
 
   @override
   Widget build(BuildContext context) {
@@ -13,31 +21,57 @@ class AuthScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(
+          AnimatedPositioned(
+            duration: defaultDuration,
             width: _size.width * 0.88,
             height: _size.height,
-            child: Container(
-              color: login_bg,
-              child: LoginForm(),
-            ),
-          ),
-          Positioned(
-            left: 0,
-            top: _size.height * 0.1,
-            right: _size.width * 0.06,
-            child: CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.white60,
-              child: SvgPicture.asset(
-                "assets/animation_logo.svg",
+            left: _isShowSignUp ? -_size.width * 0.76 : 0,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isShowSignUp = !_isShowSignUp;
+                });
+              },
+              child: Container(
                 color: login_bg,
+                child: LoginForm(),
               ),
             ),
           ),
-          Positioned(
+          AnimatedPositioned(
+            duration: defaultDuration,
+            height: _size.height,
+            width: _size.width * 0.88,
+            left: _isShowSignUp ? _size.width * 0.12 : _size.width * 0.88,
+            child: Container(
+              color: signup_bg,
+              child: SignUpForm(),
+            ),
+          ),
+          AnimatedPositioned(
+            duration: defaultDuration,
+            left: 0,
+            top: _size.height * 0.1,
+            right: _isShowSignUp ? -_size.width * 0.06 : _size.width * 0.06,
+            child: CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.white60,
+              child: _isShowSignUp
+                  ? SvgPicture.asset(
+                      "assets/animation_logo.svg",
+                      color: signup_bg,
+                    )
+                  : SvgPicture.asset(
+                      "assets/animation_logo.svg",
+                      color: login_bg,
+                    ),
+            ),
+          ),
+          AnimatedPositioned(
+            duration: defaultDuration,
             width: _size.width,
             bottom: _size.height * 0.1,
-            right: _size.width * 0.06,
+            right: _isShowSignUp ? -_size.width * 0.06 : _size.width * 0.06,
             child: SocalButtns(),
           )
         ],
